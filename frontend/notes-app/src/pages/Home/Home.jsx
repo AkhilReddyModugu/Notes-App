@@ -97,18 +97,20 @@ const Home = () => {
   // Search for a Note
   const onSearchNote = async (query) => {
     try {
-      const response= await axiosInstance.get("/search-notes",{
-        params:{query}
+      console.log("Search Query:", query); // Log the search query in frontend
+      const response = await axiosInstance.get("/search-notes", {
+        params: { query },
       });
-
-      if(response?.data?.notes){
+  
+      if (response?.data?.notes) {
         setIsSearch(true);
         setAllNotes(response.data.notes);
       }
     } catch (error) {
-      console.log(error);
+      console.log("Error in search:", error); // Log any errors in frontend
     }
-  }
+  };
+  
 
   // Update isPinned
   const updateIsPinned= async(noteData)=>{
@@ -194,7 +196,7 @@ const Home = () => {
         isShown={showToastMsg.isShown}
         message={showToastMsg.message}
         type={showToastMsg.type}
-        onclose={handleCloseToast}
+        onClose={handleCloseToast}
       />
     </>
   )

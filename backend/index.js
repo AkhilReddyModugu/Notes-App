@@ -249,35 +249,42 @@ app.put("/update-note-pinned/:noteId", authenticateToken, async (req, res) =>{
 });
 
 // Search Notes
-app.get("/search-notes", authenticateToken, async (req, res) =>{
-  const {user}= req.user;
-  const {query}= req.query;
+app.get("/search-notes", authenticateToken, async (req, res) => {
+  const { user } = req.user;
+  const { query } = req.query;
 
-  if(!query){
-    return res.status(400).json({error:true, message:"Search query is required"});
+  if (!query) {
+    return res.status(400).json({ error: true, message: "Search query is required" });
   }
+
+  console.log("User ID:", user._id); // Log the user ID to ensure it's correct
+  console.log("Search Query:", query); // Log the search query
 
   try {
     const matchingNotes = await Note.find({
-      userId: user_id,
+      userId: user._id, // Ensure this is the correct user identifier
       $or: [
         { title: { $regex: new RegExp(query, "i") } },
-        { content: { $regex: new RegExp(query, "i") } }
-      ]
+        { content: { $regex: new RegExp(query, "i") } },
+      ],
     });
-    
+
+    console.log("Matching Notes:", matchingNotes); // Log matching notes for debugging
+
     return res.json({
       error: false,
       notes: matchingNotes,
-      message: "Notes matching the search query retrieved successfully"
+      message: "Notes matching the search query retrieved successfully",
     });
   } catch (error) {
+    console.error("Error in search-notes:", error); // Log the error for investigation
     return res.status(500).json({
       error: true,
       message: "Internal Server Error",
     });
   }
 });
+
 
 
 app.listen(8000, () => {
